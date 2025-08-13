@@ -2,15 +2,36 @@
 
 A free, local AI-powered document chat application that allows you to upload documents (PDF, Word, text) and ask questions about their content. Built with React, Flask, and Ollama.
 
-## Features
+## ✨ Features
 
 - 📄 **Document Upload**: Support for PDF, Word documents, and text files
-- 🤖 **AI Chat**: Powered by Ollama with local LLM models (no API costs!)
-- 🎯 **Smart Relevance**: Automatically detects if questions are related to the uploaded document
-- 💬 **Real-time Chat**: Modern chat interface similar to ChatGPT
+- 🤖 **Smart AI Chat**: Powered by Ollama with local LLM models (no API costs!)
+- 🎯 **Intelligent Relevance**: Automatically detects if questions are related to the uploaded document
+- 💬 **Modern Chat Interface**: Beautiful full-screen design with glass morphism effects
 - 🔒 **Privacy**: All processing happens locally - your documents never leave your computer
 - 🚀 **No Database**: Lightweight in-memory storage for sessions
-- ⚡ **Fast Processing**: Optimized for quick responses with local AI
+- ⚡ **Optimized Performance**: Enhanced AI prompts and extended timeout for complex questions
+- 🎨 **Beautiful UI**: Modern gradient design with responsive components
+- 🧠 **Smart AI**: Conversational AI that can count items, provide examples, and handle multi-part questions
+
+## 🚀 Recent Improvements
+
+### AI Enhancements
+
+- **Extended Timeout**: Increased from 60s to 120s for complex questions
+- **Optimized Prompts**: Faster, more concise AI instructions
+- **Better Content Processing**: Optimized document content length for faster responses
+- **Multi-part Question Support**: AI now handles complex questions with multiple parts
+- **Consistent Item Counting**: AI accurately counts and lists ALL items from documents
+- **Natural Transitions**: Clean responses without unnecessary AI commentary
+
+### UI/UX Improvements
+
+- **Modern Design**: Full-screen gradient background with glass morphism
+- **Responsive Layout**: Better component spacing and typography
+- **Enhanced Visuals**: Gradient buttons, improved chat bubbles, and better icons
+- **Dark Theme**: Beautiful dark gradient design with white text
+- **Glass Effects**: Translucent components with backdrop blur
 
 ## Prerequisites
 
@@ -97,29 +118,37 @@ npm start
 
 The frontend will start on `http://localhost:3000`
 
-## Usage
+## 💬 Usage
 
 1. **Upload a Document**: Click "Choose File" and select a PDF, Word document, or text file
 2. **Wait for Processing**: The document will be processed and extracted
 3. **Start Chatting**: Ask questions about the document content
 4. **Get Smart Responses**: The AI will answer based on the document content and indicate if your question is related
 
-## Supported File Types
+### Example Questions
+
+- `"What are the main findings?"`
+- `"Count the recommendations"`
+- `"What are the recommendations and give me 2 more to add"`
+- `"Summarize this document"`
+- `"What are the key conclusions?"`
+
+## 📁 Supported File Types
 
 - **PDF** (.pdf) - Text extraction with PyPDF2
 - **Word Documents** (.docx, .doc) - XML parsing for .docx, text reading for .doc
 - **Text Files** (.txt) - Direct text reading
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 docu-chat-ai/
 ├── simple_backend.py        # Flask backend application
 ├── frontend/
 │   ├── src/
-│   │   ├── App.tsx          # Main React component
+│   │   ├── App.tsx          # Main React component with modern UI
 │   │   ├── index.tsx        # React entry point
-│   │   └── index.css        # Styles
+│   │   └── index.css        # Modern styles with gradients and glass effects
 │   ├── public/
 │   └── package.json
 ├── start_simple.bat         # Windows startup script
@@ -127,15 +156,16 @@ docu-chat-ai/
 └── README.md
 ```
 
-## How It Works
+## 🔧 How It Works
 
 1. **Document Processing**: Documents are parsed using appropriate libraries (PyPDF2 for PDFs, XML parsing for .docx)
 2. **Text Extraction**: Clean text is extracted and stored in memory
 3. **Relevance Check**: User questions are analyzed for relevance to the document
-4. **AI Response**: Ollama generates responses using the document context
+4. **AI Response**: Ollama generates responses using the document context with extended timeout (120s)
 5. **Response Cleaning**: AI commentary is automatically removed for clean output
+6. **Smart Formatting**: Responses are formatted with proper spacing and numbering
 
-## Configuration
+## ⚙️ Configuration
 
 ### Changing AI Model
 
@@ -151,12 +181,18 @@ result = subprocess.run([
 
 ### Available Models
 
-- `llama2` - Good general purpose model
+- `llama2` - Good general purpose model (recommended)
 - `mistral` - Fast and efficient
 - `codellama` - Good for technical documents
 - `llama2:7b` - Smaller, faster version
 
-## Troubleshooting
+### AI Performance Settings
+
+- **Timeout**: 120 seconds for complex questions
+- **Content Length**: Optimized to 2500 characters for faster processing
+- **Prompt Optimization**: Streamlined instructions for better AI performance
+
+## 🛠️ Troubleshooting
 
 ### Common Issues
 
@@ -183,9 +219,9 @@ result = subprocess.run([
    - For PDFs, ensure they contain extractable text (not scanned images)
 
 5. **AI responses taking too long**
-   - The system has a 45-second timeout
-   - Try asking simpler questions
-   - Consider using a smaller model
+   - The system now has a 120-second timeout for complex questions
+   - Try asking simpler questions if you need faster responses
+   - The AI is optimized to handle longer, more complex questions
 
 ### Performance Tips
 
@@ -193,8 +229,9 @@ result = subprocess.run([
 - Limit document size for better performance
 - Close other applications to free up memory
 - Ensure Ollama has enough RAM allocated
+- The system is now optimized for both speed and accuracy
 
-## Development
+## 🚀 Development
 
 ### Adding New Features
 
@@ -207,22 +244,24 @@ result = subprocess.run([
 - Backend health check: `http://localhost:5000/health`
 - Frontend: `http://localhost:3000`
 
-## Contributing
+## 🤝 Contributing
 
 Feel free to contribute to this project by:
 
 - Reporting bugs
 - Suggesting new features
 - Submitting pull requests
+- Improving the UI/UX
+- Optimizing AI performance
 
-## Author
+## 👨‍💻 Author
 
 **Klien Gumapac**
 
 - GitHub: [@KlienGumapac](https://github.com/KlienGumapac)
 - Repository: [docu-chat-ai](https://github.com/KlienGumapac/docu-chat-ai.git)
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see below for details.
 
@@ -250,10 +289,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - [Ollama](https://ollama.ai) for providing local LLM capabilities
 - [Flask](https://flask.palletsprojects.com) for the backend framework
 - [React](https://reactjs.org) for the frontend framework
+- [Tailwind CSS](https://tailwindcss.com) for the modern styling
 - [PyPDF2](https://pypdf2.readthedocs.io) for PDF processing
 - [python-docx](https://python-docx.readthedocs.io) for Word document processing
+- [Lucide React](https://lucide.dev) for beautiful icons
