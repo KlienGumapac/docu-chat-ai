@@ -137,7 +137,7 @@ def upload_document():
 
 @app.route('/chat', methods=['POST'])
 def chat_with_document():
-    """Simple chat endpoint using Ollama"""
+    """Smart chat endpoint using Ollama with conversational AI"""
     try:
         data = request.get_json()
         user_message = data.get('message', '')
@@ -159,20 +159,52 @@ def chat_with_document():
         doc_words = set(document_content.lower().split())
         common_words = user_words.intersection(doc_words)
         
-        relevant_keywords = ['recommendation', 'recommend', 'suggest', 'propose', 'what', 'how', 'why', 'when', 'where', 'who']
-        is_related = any(keyword in user_message.lower() for keyword in relevant_keywords) or len(common_words) > 0
+        relevant_keywords = [
+            'recommendation', 'recommend', 'suggest', 'propose', 'what', 'how', 'why', 'when', 'where', 'who',
+            'find', 'findings', 'conclusion', 'summary', 'count', 'number', 'many', 'few', 'list', 'give',
+            'show', 'tell', 'explain', 'describe', 'discuss', 'analyze', 'review', 'examine', 'study',
+            'problem', 'issue', 'challenge', 'solution', 'answer', 'response', 'result', 'outcome',
+            'example', 'instance', 'case', 'scenario', 'situation', 'context', 'background'
+        ]
+        
+        is_recommendation_question = any(word in user_message.lower() for word in ['recommendation', 'recommend']) and 'recommendation' in user_message.lower()
+        
+        is_related = any(keyword in user_message.lower() for keyword in relevant_keywords) or len(common_words) > 2
         
         try:
-      
+          
             limited_content = document_content[:2500] + "..." if len(document_content) > 2500 else document_content
-            
-            prompt = f"""Extract and return ONLY the exact text from this document that answers the question. Do not add any commentary, explanations, or extra text. Return the raw content exactly as it appears in the document:
-
-Document: {limited_content}
+           
+            if is_recommendation_question:
+                prompt = f"""Document: {limited_content}
 
 Question: {user_message}
 
-Return ONLY the exact text from the document:"""
+Instructions: 
+- Find and list ALL recommendations in the document
+- Count them accurately and give the total number
+- List each recommendation with proper numbering
+- For "add more" requests, provide additional recommendations directly
+- Use natural transitions like "Additional recommendations:" for extra items
+- Avoid commentary phrases - just answer directly
+- If document seems incomplete, mention that
+
+Answer:"""
+            else:
+                prompt = f"""Document: {limited_content}
+
+Question: {user_message}
+
+Instructions: 
+- Answer directly and conversationally based on the document content
+- Count items accurately and give complete numbers
+- List ALL relevant items with proper formatting
+- For "add more" requests, provide additional suggestions directly
+- Be comprehensive but concise
+- Use natural transitions like "Additional recommendations:" for extra items
+- Avoid commentary phrases - just answer directly
+
+Answer:"""
             
             print(f"=== CHAT DEBUG ===")
             print(f"User question: {user_message}")
@@ -182,37 +214,41 @@ Return ONLY the exact text from the document:"""
             print("=" * 50)
             print(limited_content[:800])
             print("=" * 50)
-            print(f"Using exact content prompt with proper formatting")
+            print(f"Using simplified AI prompt")
 
             result = subprocess.run([
                 "C:\\Users\\Admin\\AppData\\Local\\Programs\\Ollama\\ollama.exe",
                 "run", "llama2",
                 prompt
-            ], capture_output=True, text=True, encoding='utf-8', errors='ignore', timeout=45)  # Increased timeout
+            ], capture_output=True, text=True, encoding='utf-8', errors='ignore', timeout=120)  
             
             if result.returncode == 0:
                 response = result.stdout.strip()
                 
                 import re
-             
+                
                 response = re.sub(r'^(Of course!|Here is|Based on|According to|The document states|The text shows|I found|Here\'s what|The answer is|The recommendations are|The meaning is).*?[:"]\s*', '', response, flags=re.IGNORECASE)
-             
+                
                 response = re.sub(r'\s*(\(Chapter.*?\)|as mentioned in the document|from the document|in the document).*$', '', response, flags=re.IGNORECASE)
-          
+                
                 response = re.sub(r'^["\'](.*)["\']$', r'\1', response.strip())
                 
-                if not response:
-                    response = "I couldn't find specific information about that in the document. Could you please rephrase your question?"
-                confidence = 0.8 if is_related else 0.3
+                if not response or len(response.strip()) < 10:
+                    if is_related:
+                        response = "I can see the document content, but I'm having trouble finding specific information about that. Could you please rephrase your question or ask about something else in the document?"
+                    else:
+                        response = "I'd be happy to help you with questions about the uploaded document! What would you like to know about it?"
+                
+                confidence = 0.9 if is_related else 0.4
             else:
-                response = "I'm having trouble processing your request right now. Please try again."
+                response = "I'm having trouble processing your request right now. Please try again in a moment."
                 confidence = 0.0
                 
         except subprocess.TimeoutExpired:
-            response = "The AI is taking longer than expected to respond. Please try asking a simpler question or try again in a moment."
+            response = "I'm taking a bit longer to think about your question. Please try asking it again or rephrase it slightly."
             confidence = 0.0
         except Exception as e:
-            response = f"Error communicating with AI: {str(e)}"
+            response = f"I encountered an error while processing your request. Please try again."
             confidence = 0.0
         
         return jsonify({

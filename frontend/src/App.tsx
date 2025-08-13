@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Upload, Send, FileText, Bot, User, AlertCircle } from 'lucide-react';
+import { Upload, Send, FileText, Bot, User, AlertCircle, X, Sparkles } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -28,18 +28,16 @@ function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Add welcome message
   useEffect(() => {
     if (messages.length === 0) {
       setMessages([
         {
           id: '1',
-          text: "Hello! I'm your AI document assistant. Upload a document (PDF, Word, or text file) and I'll help you understand its content. Ask me anything about the document!",
+          text: "👋 Hi there! I'm your AI document assistant. I can help you understand and analyze any document you upload. Just share a PDF, Word document, or text file, and I'll be happy to chat with you about its content!",
           sender: 'bot',
           timestamp: new Date(),
         }
@@ -51,7 +49,6 @@ function App() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
     if (!allowedTypes.includes(file.type)) {
       setError('Please upload a PDF, Word document, or text file.');
@@ -77,12 +74,11 @@ function App() {
         filename: response.data.filename,
       });
 
-      // Add success message
       setMessages(prev => [
         ...prev,
         {
           id: Date.now().toString(),
-          text: `✅ Document "${response.data.filename}" uploaded successfully! You can now ask me questions about its content.`,
+          text: `📄 Great! I've uploaded "${response.data.filename}" and I'm ready to help you understand it. Feel free to ask me anything about the document - I can summarize, explain, count items, or answer any questions you have!`,
           sender: 'bot',
           timestamp: new Date(),
         }
@@ -147,7 +143,7 @@ function App() {
     setMessages([
       {
         id: '1',
-        text: "Hello! I'm your AI document assistant. Upload a document (PDF, Word, or text file) and I'll help you understand its content. Ask me anything about the document!",
+        text: "👋 Hi there! I'm your AI document assistant. I can help you understand and analyze any document you upload. Just share a PDF, Word document, or text file, and I'll be happy to chat with you about its content!",
         sender: 'bot',
         timestamp: new Date(),
       }
@@ -155,23 +151,25 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="bg-black/20 backdrop-blur-lg border-b border-white/10">
+        <div className="px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Bot className="h-8 w-8 text-primary-600" />
-            <h1 className="text-xl font-semibold text-gray-900">AI Document Chat</h1>
+            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-white">AI Document Chat</h1>
           </div>
           {session && (
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-gray-300 bg-white/10 px-3 py-1 rounded-full">
                 <FileText className="h-4 w-4" />
                 <span>{session.filename}</span>
               </div>
               <button
                 onClick={resetSession}
-                className="text-sm text-red-600 hover:text-red-700 font-medium"
+                className="text-sm text-red-400 hover:text-red-300 font-medium bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-full transition-colors"
               >
                 New Document
               </button>
@@ -180,17 +178,18 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
-        {/* File Upload Section */}
+      <div className="flex-1 flex flex-col p-6 space-y-6 overflow-hidden">
+   
         {!session && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="text-center">
-              <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 max-w-md w-full text-center">
+              <div className="p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <Upload className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-xl font-semibold text-white mb-3">
                 Upload a Document
               </h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-300 mb-6">
                 Upload a PDF, Word document, or text file to start chatting about its content.
               </p>
               <input
@@ -203,7 +202,7 @@ function App() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto font-medium transition-all duration-200 transform hover:scale-105"
               >
                 {isUploading ? (
                   <>
@@ -221,85 +220,122 @@ function App() {
           </div>
         )}
 
-        {/* Error Display */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center space-x-2">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            <span className="text-red-700">{error}</span>
+          <div className="bg-red-500/20 backdrop-blur-lg border border-red-500/30 rounded-xl p-4 flex items-center space-x-3">
+            <AlertCircle className="h-5 w-5 text-red-400" />
+            <span className="text-red-200">{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-red-400 hover:text-red-300"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         )}
 
-        {/* Chat Messages */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col h-96">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
                     message.sender === 'user'
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'bg-white/20 text-white backdrop-blur-sm'
                   }`}
                 >
-                  <div className="flex items-start space-x-2">
+                  <div className="flex items-start space-x-3">
                     {message.sender === 'bot' && (
-                      <Bot className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <div className="p-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full">
+                        <Bot className="h-3 w-3 text-white" />
+                      </div>
                     )}
                     <div className="flex-1">
-                      <p className="text-sm">{message.text}</p>
+                      <div className="text-sm whitespace-pre-line leading-relaxed">{message.text}</div>
                       {message.sender === 'bot' && message.isRelated !== undefined && (
-                        <div className="mt-2 text-xs text-gray-500">
+                        <div className="mt-2 text-xs">
                           {message.isRelated ? (
-                            <span className="text-green-600">✓ Related to document</span>
+                            <span className="text-green-400 bg-green-500/20 px-2 py-1 rounded-full">✓ Related to document</span>
                           ) : (
-                            <span className="text-orange-600">⚠ Not related to document</span>
+                            <span className="text-orange-400 bg-orange-500/20 px-2 py-1 rounded-full">⚠ Not related to document</span>
                           )}
                         </div>
                       )}
                     </div>
                     {message.sender === 'user' && (
-                      <User className="h-4 w-4 text-white mt-0.5 flex-shrink-0" />
+                      <div className="p-1 bg-white/20 rounded-full">
+                        <User className="h-3 w-3 text-white" />
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
             ))}
             
-            {/* Loading indicator */}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Bot className="h-4 w-4 text-gray-500" />
+                <div className="bg-white/20 backdrop-blur-sm text-white px-4 py-3 rounded-2xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full">
+                      <Bot className="h-3 w-3 text-white" />
+                    </div>
                     <div className="typing-indicator"></div>
-                    <span className="text-sm text-gray-600">AI is thinking...</span>
+                    <span className="text-sm text-gray-300">Thinking...</span>
                   </div>
                 </div>
+              </div>
+            )}
+            
+            {session && messages.length > 1 && !isLoading && (
+              <div className="flex flex-wrap gap-2 justify-start">
+                <button
+                  onClick={() => setInputMessage("What are the main findings?")}
+                  className="text-xs bg-purple-500/20 text-purple-300 px-3 py-2 rounded-full hover:bg-purple-500/30 transition-colors border border-purple-500/30"
+                >
+                  What are the main findings?
+                </button>
+                <button
+                  onClick={() => setInputMessage("How many recommendations are there?")}
+                  className="text-xs bg-green-500/20 text-green-300 px-3 py-2 rounded-full hover:bg-green-500/30 transition-colors border border-green-500/30"
+                >
+                  Count recommendations
+                </button>
+                <button
+                  onClick={() => setInputMessage("Can you summarize this document?")}
+                  className="text-xs bg-pink-500/20 text-pink-300 px-3 py-2 rounded-full hover:bg-pink-500/30 transition-colors border border-pink-500/30"
+                >
+                  Summarize document
+                </button>
+                <button
+                  onClick={() => setInputMessage("What are the key conclusions?")}
+                  className="text-xs bg-orange-500/20 text-orange-300 px-3 py-2 rounded-full hover:bg-orange-500/30 transition-colors border border-orange-500/30"
+                >
+                  Key conclusions
+                </button>
               </div>
             )}
             
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Section */}
-          <div className="border-t border-gray-200 p-4">
-            <div className="flex space-x-2">
+          <div className="border-t border-white/20 p-6">
+            <div className="flex space-x-3">
               <input
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={session ? "Ask me about the document..." : "Upload a document first..."}
+                placeholder={session ? "Ask me anything about the document... (e.g., 'What are the main points?', 'Can you explain this section?')" : "Upload a document first to start chatting..."}
                 disabled={!session || isLoading}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-white/5 disabled:cursor-not-allowed text-white placeholder-gray-400"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!session || !inputMessage.trim() || isLoading}
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-all duration-200 transform hover:scale-105"
               >
                 <Send className="h-4 w-4" />
               </button>
